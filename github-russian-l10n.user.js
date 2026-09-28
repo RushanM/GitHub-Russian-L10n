@@ -1,13 +1,13 @@
 // ==UserScript==
-// @name            GitHub Russian Localization
+// @name            GitHub Russian L10n
 // @name:ru         Русская локализация GitHub
 // @author          Deflecat
 // @contributionURL https://boosty.to/rushanm
 // @description     Localizes GitHub websites into Russian
 // @description:ru  Локализует сайты GitHub на русский язык
-// @downloadURL     https://github.com/RushanM/GitHub-Russian-Localization/raw/master/github-russian-l10n.user.js
+// @downloadURL     https://github.com/RushanM/GitHub-Russian-L10n/raw/master/github-russian-l10n.user.js
 // @grant           none
-// @homepageURL     https://github.com/RushanM/GitHub-Russian-Localization
+// @homepageURL     https://github.com/RushanM/GitHub-Russian-L10n
 // @icon            https://github.githubassets.com/favicons/favicon.png
 // @license         MIT
 // @match           https://*.github.com/*
@@ -15,17 +15,17 @@
 // @match           https://github.blog/*
 // @match           https://github.com/*
 // @run-at          document-end
-// @namespace       githubrussianlocalization
-// @supportURL      https://github.com/RushanM/GitHub-Russian-Localization/issues
-// @updateURL       https://github.com/RushanM/GitHub-Russian-Localization/raw/master/github-russian-l10n.user.js
-// @version         P37
+// @namespace       githubrussianl10n
+// @supportURL      https://github.com/RushanM/GitHub-Russian-L10n/issues
+// @updateURL       https://github.com/RushanM/GitHub-Russian-L10n/raw/master/github-russian-l10n.user.js
+// @version         A38
 // ==/UserScript==
 
 (function() {
     'use strict';
 
-    // ссылка на локализационный файл формата FTL l10n/ru.ftl в репозитории
-    const FTL_URL = 'https://raw.githubusercontent.com/RushanM/GitHub-Russian-Localization/master/l10n/ru.ftl';
+    // Ссылка на документ локализации формата Fluent/FTL ru.ftl в репозитории
+    const FTL_URL = 'https://raw.githubusercontent.com/RushanM/GitHub-Russian-L10n/master/ru.ftl';
     const LOG_PREFIX = '[GHRL10N]';
     
     /**
@@ -176,7 +176,7 @@
         }
 
         /**
-         * локализация хлебной крошки Dashboard
+         * Локализация хлебной крошки Dashboard
          */
         localizeDashboard() {
             // старый селектор
@@ -185,10 +185,12 @@
                 this.localizeByText(el, 'Dashboard', 'dashboard');
             });
             
-            // новый селектор для хлебных крошек
-            const breadcrumbElements = document.querySelectorAll('.styles-module__contextCrumbLast__cE7QReI');
+            // Селектор для хлебных крошек
+            const breadcrumbElements = document.querySelectorAll('.styles-module__contextCrumbLast__cE7QReI, .styles-module__contextCrumbLast__tI2e3, [data-component="Breadcrumbs.Item"] span');
             breadcrumbElements.forEach(el => {
-                this.localizeByText(el, 'Dashboard', 'dashboard');
+                if (el.textContent.trim() === 'Dashboard') {
+                    this.localizeByText(el, 'Dashboard', 'dashboard');
+                }
             });
         }
 
@@ -342,11 +344,11 @@
         }
 
         /**
-         * локализация поисковой строки «Type / to search»
+         * Локализация поисковой строки «Type [/] to search»
          */
         localizeSearchPlaceholder() {
-            // новый селектор для поисковой строки в шапке
-            const searchPlaceholder = document.querySelector('.Search-module__placeholder__Ke68F3b');
+            // Селекторы для поисковой строки в шапке
+            const searchPlaceholder = document.querySelector('.Search-module__placeholder__Ke68F3b, .Search-module__placeholder__p9hbG, [class*="Search-module__placeholder"]');
             if (searchPlaceholder) {
                 const translation = this.getTranslation('type-slash-to-search');
                 if (translation) {
@@ -451,19 +453,19 @@
             });
         }
 
-        /**
-         * локализация всплывающих подсказок шапки страницы (AppHeader)
-         * обрабатывает tooltips с горячими клавишами и без них
-         */
+        // Локализация всплывающих подсказок шапки страницы (AppHeader). Обрабатывает всплывающие подсказки с горячими клавишами и без них.
         localizeAppHeaderTooltips() {
-            // маппирование латинских клавиш на русские (по позиции на клавиатуре)
+            // Маппирование латинских клавиш на русские по позиции на клавиатуре
+            const keyG = this.getTranslation('key-g', 'П');
+            const keyD = this.getTranslation('key-d', 'В');
+            
             const keyboardMap = {
-                'G': 'П', 'g': 'п',
+                'G': keyG, 'g': keyG.toLowerCase(),
                 'I': 'Ш', 'i': 'ш',
                 'K': 'Л', 'k': 'л',
                 'P': 'З', 'p': 'з',
                 'N': 'Т', 'n': 'т',
-                'D': 'В', 'd': 'в'
+                'D': keyD, 'd': keyD.toLowerCase()
             };
 
             // конфигурация подсказок для локализации
@@ -474,14 +476,18 @@
                 { text: 'Chat with Copilot', key: 'chat-with-copilot', translateKeys: false },
                 { text: 'Create new...', key: 'create-new', translateKeys: false },
                 { text: 'Repositories', key: 'repositories', translateKeys: false },
+                { text: 'All repositories', key: 'all-repositories', translateKeys: false },
                 { text: 'Open user navigation menu', key: 'open-user-navigation-menu', translateKeys: false },
                 { text: 'Search for repositories', key: 'search-for-repositories', translateKeys: false },
                 { text: 'Add repositories, files, and spaces', key: 'add-repositories-files-spaces', translateKeys: false },
                 // подсказки с клавишами, которые нужно перевести
                 { text: 'Command palette', key: 'command-palette', translateKeys: true },
                 { text: 'Issues', key: 'issues', translateKeys: true },
+                { text: 'All issues', key: 'all-issues', translateKeys: true },
                 { text: 'Pull requests', key: 'pull-requests', translateKeys: true },
+                { text: 'All pull requests', key: 'all-pull-requests', translateKeys: true },
                 { text: 'You have no unread notifications', key: 'you-have-no-notifications', translateKeys: true },
+                { text: 'You have unread notifications', key: 'you-have-unread-notifications', translateKeys: true },
                 // подсказки с клавишами, которые не нужно переводить (пиктограмма клавиши ввода, символы и т. п.)
                 { text: 'Send now', key: 'send-now', translateKeys: false, preserveKbd: true }
             ];
@@ -669,7 +675,7 @@
         }
 
         /**
-         * метод для локализации всплывающих подсказок (tooltips)
+         * Метод для локализации всплывающих подсказок
          */
         localizeAllTooltips() {
             const tooltipTranslations = [
@@ -685,12 +691,29 @@
                 });
             });
 
-            // динамические подсказки с изменяемыми идентификаторами
+            // Локализация всплывающей подсказки Refined GitHub «Open unread notifications»
+            const rghTooltips = document.querySelectorAll('tool-tip');
+            rghTooltips.forEach(tooltip => {
+                if (tooltip.hasAttribute('data-ru-localized')) return;
+                // Проверка, что первый дочерний элемент — это текстовый узел
+                if (tooltip.childNodes.length > 0 && tooltip.childNodes[0].nodeType === Node.TEXT_NODE) {
+                    const text = tooltip.childNodes[0].nodeValue.trim();
+                    if (text === 'Open unread notifications') {
+                        const translation = this.getTranslation('open-unread-notifications');
+                        if (translation) {
+                            tooltip.childNodes[0].nodeValue = translation + ' ';
+                            tooltip.setAttribute('data-ru-localized', 'true');
+                        }
+                    }
+                }
+            });
+
+            // Динамические подсказки с изменяемыми идентификаторами
             this.localizeDynamicTooltips();
         }
 
         /**
-         * локализация подсказок с динамическими идентификаторами
+         * Локализация всплывающих подсказок с динамическими идентификаторами
          */
         localizeDynamicTooltips() {
             const dynamicTranslations = [
@@ -2406,7 +2429,7 @@
                 ['Copilot metrics', 'hl-copilot-metrics'],
                 ['Claude and Codex', 'hl-claude-and-codex']
                 
-                // одиночные предлоги (and, for, to, in, on, with) обрабатываются в методе translatePrepositions()
+                // Одиночные предлоги (and, for, to, in, on, with) обрабатываются в методе translatePrepositions()
             ];
             
             // загружаем переводы из FTL и сортируем по длине (от длинных к коротким)
